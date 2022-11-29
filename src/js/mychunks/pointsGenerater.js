@@ -5,6 +5,7 @@ var canvas = d3.select("body").append("canvas")
   .attr("height", height);
 var context = canvas.node().getContext("2d");
 var interval = 1;
+var cdis = 40;
 var patterns = [
   {
     path: "M 18.9 576.7 c 0 0 63.9 -72.9 117.8 -79.6 c 0 0 205.2 -34.6 301.7 -104.8 c 0 0 111 -74.7 183.9 -259.7 c 0 0 29.2 -35.9 65 -20.2 c 0 0 121.1 48.2 191.8 21.3 c 0 0 52.7 -14.6 67.3 -12.3 c 0 0 -19.1 88.6 -21.3 149.2 c 0 0 5.6 133.5 38.1 187.3 c 0 0 47.1 163.7 41.5 180.6 c 0 0 -31.4 29.2 -274.8 23.6 c 0 0 -252.3 2.6 -291.6 0.7 C 438.3 662.6 190.5 656.3 18.9 576.7 Z",
@@ -40,7 +41,7 @@ var bezier = function(t, p0, p1, p2, p3){
 
 var drawBezier = function(p0, p1, p2, p3){
   var points = [];
-  var accuracy = 0.01;
+  var accuracy = 0.01 * (cdis / 10);
   points.push(p0);
   context.moveTo(p0.x, p0.y);
   for (var i=0; i<1; i+=accuracy){
@@ -173,7 +174,7 @@ var drawSvgPath = function(shape, rows)
     {
       points.push(properties.getPointAtLength(j));
     }
-    result.push(drawSameDistancePoints(points, "#f00", 10));
+    result.push(drawSameDistancePoints(points, "#f00", cdis));
 
     points = [];
     if (i == 0)
@@ -190,14 +191,14 @@ var drawSvgPath = function(shape, rows)
       points = drawBezier(p0, rects[i].b1, rects[i].b2, p3);
       points.reverse();
     }
-    result.push(drawSameDistancePoints(points, "#0f0", 10));
+    result.push(drawSameDistancePoints(points, "#0f0", cdis));
 
     points = [];
     for (var j = rects[i].rb; j >= rects[i].rt; j -= interval)
     {
       points.push(properties.getPointAtLength(j));
     }
-    result.push(drawSameDistancePoints(points, "#00f", 10));
+    result.push(drawSameDistancePoints(points, "#00f", cdis));
 
     points = [];
     if (i == rows - 1)
@@ -217,7 +218,7 @@ var drawSvgPath = function(shape, rows)
         points.push(properties.getPointAtLength(j));
       }
     }
-    result.push(drawSameDistancePoints(points, "#000", 10));
+    result.push(drawSameDistancePoints(points, "#000", cdis));
     totalPaths.push(result);
   }
   return totalPaths;

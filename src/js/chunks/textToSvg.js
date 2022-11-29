@@ -7,7 +7,7 @@ const textToSvg = (text, font = "../../font/Oswald-Bold.ttf") => {
   const options = {
     x: 0,
     y: 72,
-    fontSize: 200,
+    fontSize: 400,
     anchor: 'left baseline',
     kerning: false,
     attributes: attributes

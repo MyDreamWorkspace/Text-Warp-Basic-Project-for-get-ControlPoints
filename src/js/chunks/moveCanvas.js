@@ -8,18 +8,16 @@ const moveCanvas = (movingElement) => {
 
   canvasDrag[0].enable();
   document.body.style.cursor = 'grab';
-  // "SPACE" KEY PRESSED
-  document.addEventListener('keydown', function (e) {
-      // canvasDrag[0].enable();
-      // document.body.style.cursor = 'grab';
-  });
 
-  document.addEventListener('keyup', function (e) {
-    if (e.code === 'Space') {
-      // canvasDrag[0].disable();
-      // document.body.style.cursor = 'default';
-    }
-  });
+  // canvasDrag[0].disable();
+  //
+  // // "SPACE" KEY PRESSED
+  // document.addEventListener('keydown', function (e) {
+  //   if (e.code === 'Space') {
+  //     canvasDrag[0].enable();
+  //     document.body.style.cursor = 'grab';
+  //   }
+  // });
 };
 
 export default moveCanvas;
