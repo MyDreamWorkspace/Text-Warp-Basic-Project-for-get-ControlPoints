@@ -22,7 +22,6 @@ const fontNameShower =document.getElementById("lbl_fontName");
 const fontName = document.getElementById("fontName");
 const fontStatus = document.getElementById("fontStatus");
 const fontId = document.getElementById("fontId");
-var controlPath;
 var inputControlPoints = [];
 var words, wordIndex = -1;
 var segRate = [
@@ -101,7 +100,7 @@ function warpText(svgString) {
   var temp_svg = document.getElementById("temp_svg"+wordIndex);
   var zoomRatio = boundRatio();
   zoomElement.style.transform = "scale("+zoomRatio+")";
-  zoom =1;
+  zoom = 1;
   // Need to interpolate first, so angles remain sharp
   const warp = new Warp(temp_svg);
   warp.interpolate( 4 );
@@ -171,60 +170,11 @@ function warpText(svgString) {
     return [nx, ny, ...W];
   }
 
-  // Draw control shape
-  function drawControlShape(element = controlPath, V = controlPoints) {
-    const path = [`M${V[0][0]} ${V[0][1]}`];
-
-    for (let i = 1; i < V.length; i++) {
-      path.push(`L${V[i][0]} ${V[i][1]}`);
-    }
-    path.push("Z");
-    element.setAttribute("d", path.join(""));
-  }
-
-  // Draw control point
-  function drawPoint(element, pos = { x: 0, y: 0 }, index) {
-    const point = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "circle",
-    );
-    point.setAttributeNS(null, "class", "control-point");
-    point.setAttributeNS(null, "cx", pos.x);
-    point.setAttributeNS(null, "cy", pos.y);
-    point.setAttributeNS(null, "r", 6);
-    element.appendChild(point);
-
-    draggableControlPoints.push(point);
-
-    Draggable.create(point, {
-      type: "x,y",
-      onDrag: function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const relativeX = (this.pointerX - temp_svg.getBoundingClientRect().left) / zoom;
-        const relativeY = (this.pointerY - temp_svg.getBoundingClientRect().top) / zoom;
-        controlPoints[index] = [relativeX, relativeY];
-        drawControlShape();
-        warp.transform(reposition);
-      },
-    });
-  }
-
-  // Place control points
-  function drawControlPoints(element = temp_svg, V = controlPoints) {
-    V.map((i, index) => {
-      drawPoint(element, { x: i[0], y: i[1] }, index);
-      return null;
-    });
-  }
-
   document.addEventListener("wheel", function (e) {
     if (e.deltaY > 0) {
       zoomElement.style.transform = `scale(${(zoom += 0.005)})`;
-      // controlPath.style.strokeWidth = `${1 / zoom}px`;
     } else if (zoomElement.getBoundingClientRect().width >= 30) {
       zoomElement.style.transform = `scale(${(zoom -= 0.005)})`;
-      // controlPath.style.strokeWidth = `${1 / zoom}px`;
     }
     draggableControlPoints.map((i) => {
       if (i.getBoundingClientRect().height > 6) {
@@ -252,19 +202,21 @@ function warpText(svgString) {
     origin_svgElement.appendChild(temp_svg.children[0]);
     svgContainer.removeChild(temp_svg);
     wordIndex++;
+    var pathData = "";
     if(wordIndex < words.length){
       warpStart();
     }
-    var pathData = "";
-    for(var i=0;i<origin_svgElement.children.length;i++){
-      pathData += origin_svgElement.children[i].getAttribute("d");
-      origin_svgElement.removeChild(origin_svgElement.children[i]);
+    else{
+      for(var i=0;i<origin_svgElement.children.length;i++){
+        pathData += origin_svgElement.children[i].getAttribute("d");
+      }
+      origin_svgElement.children[0].setAttribute("d", pathData);
+      for(var i=1;i<origin_svgElement.children.length;i++){
+        origin_svgElement.removeChild(origin_svgElement.children[i]);
+      }
+      // var completedPathBBox = origin_svgElement.children[0].getBBox();
+      document.getElementById("warpLoading").classList.remove("show");
     }
-    var completePath = document.createElement("path");
-    completePath.setAttribute("fill", "black");
-    completePath.setAttribute("d", pathData);
-    origin_svgElement.append(completePath);
-    document.getElementById("warpLoading").classList.remove("show");
   }
   var k = 0;
   function runThread() {
