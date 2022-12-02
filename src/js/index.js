@@ -11,17 +11,11 @@ import serialize_svg_path from "serialize-svg-path";
 
 gsap.registerPlugin(Draggable);
 
-var draggableControlPoints = [];
-var zoom = 1;
 const svgContainer = document.getElementById("svg_container");
 const origin_svgElement = document.getElementById("svg_element");
-const zoomElement = document.getElementById("scale_warp");
 const btnWarpText = document.getElementById("btn_warpText");
 const containTextInput = document.getElementById("containTextInput");
-const fontNameShower =document.getElementById("lbl_fontName");
 const fontName = document.getElementById("fontName");
-const fontStatus = document.getElementById("fontStatus");
-const fontId = document.getElementById("fontId");
 var inputControlPoints = [];
 var words, wordIndex = -1;
 var segRate = [
@@ -60,10 +54,7 @@ btnWarpText.addEventListener("click", (e)=>{
   document.getElementById("warpLoading").classList.add("show");
   var inputedText = containTextInput.value;
   words = wordSeparate(inputedText);
-  // currentFontIndex++;
-  // font = fontList[currentFontIndex];
   font = fontName.getAttribute("value");
-  console.log("font Name", font);
   inputControlPoints = drawSvgPath(0, words.length)
   if(words.length > 0){
     wordIndex = 0;
@@ -74,13 +65,14 @@ btnWarpText.addEventListener("click", (e)=>{
 function warpStart(){
   if (wordIndex >= words.length)
     return;
-  console.log("words", words[wordIndex]);
   const promise = textToSvg(words[wordIndex], "../../fonts/" + font);
   promise.then(warpText);
 }
 
-function boundRatio(){
-  return document.getElementById("shoesImage").getBoundingClientRect().width / 1223;
+function getOffset(){
+  var x_Offset = document.getElementById("shoesImage").offsetLeft + document.getElementById("shoesImage").getBoundingClientRect().width * 0.141;
+  var y_Offset = document.getElementById("shoesImage").offsetTop + document.getElementById("shoesImage").getBoundingClientRect().height * 0.132;
+  return [Math.floor(x_Offset), Math.floor(y_Offset)];
 }
 
 function warpText(svgString) {
@@ -98,9 +90,6 @@ function warpText(svgString) {
   var translated_path_data = serialize_svg_path(translate_svg_path(origin_path_data, -pathRect.x, -pathRect.y));
   svgContainer.children[svgContainer.children.length-1].children[0].setAttribute("d", translated_path_data);
   var temp_svg = document.getElementById("temp_svg"+wordIndex);
-  var zoomRatio = boundRatio();
-  zoomElement.style.transform = "scale("+zoomRatio+")";
-  zoom = 1;
   // Need to interpolate first, so angles remain sharp
   const warp = new Warp(temp_svg);
   warp.interpolate( 4 );
@@ -170,19 +159,6 @@ function warpText(svgString) {
     return [nx, ny, ...W];
   }
 
-  document.addEventListener("wheel", function (e) {
-    if (e.deltaY > 0) {
-      zoomElement.style.transform = `scale(${(zoom += 0.005)})`;
-    } else if (zoomElement.getBoundingClientRect().width >= 30) {
-      zoomElement.style.transform = `scale(${(zoom -= 0.005)})`;
-    }
-    draggableControlPoints.map((i) => {
-      if (i.getBoundingClientRect().height > 6) {
-        i.setAttribute("r", 6 / zoom);
-      }
-    });
-  });
-
   //to two dimention array
   let inputControlPoints_toTwoDim = [];
   inputControlPoints[wordIndex][0].forEach(value => {
@@ -198,15 +174,19 @@ function warpText(svgString) {
     inputControlPoints_toTwoDim.push(value)
   });
 
+  function getBoxRatio(originWidth){
+    return document.getElementById("shoesImage").getBoundingClientRect().width * 0.7883 / originWidth;
+  }
+
   function mainProcess() {
     origin_svgElement.appendChild(temp_svg.children[0]);
     svgContainer.removeChild(temp_svg);
     wordIndex++;
-    var pathData = "";
     if(wordIndex < words.length){
       warpStart();
     }
     else{
+      var pathData = "";
       for(var i=0;i<origin_svgElement.children.length;i++){
         pathData += origin_svgElement.children[i].getAttribute("d");
       }
@@ -214,7 +194,11 @@ function warpText(svgString) {
       for(var i=1;i<origin_svgElement.children.length;i++){
         origin_svgElement.removeChild(origin_svgElement.children[i]);
       }
-      // var completedPathBBox = origin_svgElement.children[0].getBBox();
+      var completedPathBBox = origin_svgElement.children[0].getBBox();
+      origin_svgElement.setAttribute("viewBox", completedPathBBox.x+" "+completedPathBBox.y+" "+completedPathBBox.width+" "+completedPathBBox.height);
+      origin_svgElement.style.transform = "scale("+ getBoxRatio(completedPathBBox.width)+")";
+      origin_svgElement.style.width = completedPathBBox.width+"px";
+      origin_svgElement.style.height = completedPathBBox.height+"px";
       document.getElementById("warpLoading").classList.remove("show");
     }
   }
@@ -240,5 +224,4 @@ function warpText(svgString) {
   runThread();
 }
 
-moveCanvas(svgContainer);
 
