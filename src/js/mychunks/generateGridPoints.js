@@ -1,3 +1,4 @@
+//None use
 const generateGridPoints = (width, height, offsetX, offsetY, amount)=>{
   const sideNumber = amount /4;
     const checkAndRoundNumber = (length, index, offset) => (length / sideNumber) * index + offset;

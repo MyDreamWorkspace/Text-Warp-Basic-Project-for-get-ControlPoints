@@ -143,6 +143,7 @@ btnWarpText.addEventListener("custom-event", function (e) {
         totalCharLength += words[i].length;
     }
   fontName = "../../fonts/"+ fonts[randomFontIndex];
+  console.log("font index:", randomFontIndex);
   if (words.length > 0) {
     charIndex = 0;
     wordIndex = 0;
@@ -152,9 +153,10 @@ btnWarpText.addEventListener("custom-event", function (e) {
 
 function warpStart() {
   if (charIndex == words[wordIndex].length) {
-    charIndex = 0;
     wordIndex += 1;
+    charIndex = 0;
   }
+  
 
   if (wordIndex < words.length) {
     const promise = textToSvg(words[wordIndex][charIndex], fontName);

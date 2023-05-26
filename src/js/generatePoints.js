@@ -1,11 +1,12 @@
-﻿var width = 2000;
-var height = 2000;
+﻿//none use, original source code
+var __width = 2000;
+var __height = 2000;
 var canvas = d3.select("body").append("canvas")
-  .attr("width", width)
-  .attr("height", height);
+  .attr("width", __width)
+  .attr("height", __height);
 var context = canvas.node().getContext("2d");
-var interval = 1;
-var patterns = [
+var __interval = 1;
+var __patterns = [
     {
         path: "M 18.9 576.7 c 0 0 63.9 -72.9 117.8 -79.6 c 0 0 205.2 -34.6 301.7 -104.8 c 0 0 111 -74.7 183.9 -259.7 c 0 0 29.2 -35.9 65 -20.2 c 0 0 121.1 48.2 191.8 21.3 c 0 0 52.7 -14.6 67.3 -12.3 c 0 0 -19.1 88.6 -21.3 149.2 c 0 0 5.6 133.5 38.1 187.3 c 0 0 47.1 163.7 41.5 180.6 c 0 0 -31.4 29.2 -274.8 23.6 c 0 0 -252.3 2.6 -291.6 0.7 C 438.3 662.6 190.5 656.3 18.9 576.7 Z",
         z1: 840,
@@ -44,7 +45,7 @@ var drawBezier = function(p0, p1, p2, p3){
     var accuracy = 0.01;
     // context.beginPath();
     // context.strokeStyle = "#000";
-    // context.lineWidth = 3;
+    // context.line__width = 3;
     points.push(p0);
     context.moveTo(p0.x, p0.y);
     for (var i = 0; i < 1; i += accuracy){
@@ -109,7 +110,7 @@ function getRandomInt(min, max) {
 
 var drawSvgOriginalPath = function(shape)
 {
-    var properties = spp.svgPathProperties(patterns[shape].path);
+    var properties = spp.svgPathProperties(__patterns[shape].path);
     var length = properties.getTotalLength();
     var points = [];
     for (var i = 0; i < length; i += 20)
@@ -121,17 +122,9 @@ var drawSvgOriginalPath = function(shape)
 
 var drawSvgPath = function(shape, rows)
 {
-    var pathArray = [];
-    // var p = new Path2D(patterns[shape].path);
-    // context.clearRect(0, 0, width, height);
-    // context.strokeStyle = '#ff0000';
-    // context.lineWidth = 6;
-    // context.beginPath();
-    // context.stroke(p);
-
-    var properties = spp.svgPathProperties(patterns[shape].path);
+    var properties = spp.svgPathProperties(__patterns[shape].path);
     var length = properties.getTotalLength();
-    var z1 = patterns[shape].z1, z2 = patterns[shape].z2, z3 = patterns[shape].z3, z4 = patterns[shape].z4;
+    var z1 = __patterns[shape].z1, z2 = __patterns[shape].z2, z3 = __patterns[shape].z3, z4 = __patterns[shape].z4;
     z1 += getRandomInt(-30, 30)
     var rects = [];
     var startPoints = [0], endPoints = [z3];
@@ -190,9 +183,9 @@ var drawSvgPath = function(shape, rows)
     {
         var result = [];
         var points = [];
-        var real_lt = patterns[shape].rz[rows - 1][i];
+        var real_lt = __patterns[shape].rz[rows - 1][i];
         real_lt += getRandomInt(-50, 150);
-        for (var j = real_lt/*rects[i].lt*/; j >= rects[i].lb; j -= interval)
+        for (var j = real_lt/*rects[i].lt*/; j >= rects[i].lb; j -= __interval)
         {
             points.push(properties.getPointAtLength(j));
         }
@@ -201,7 +194,7 @@ var drawSvgPath = function(shape, rows)
         points = [];
         if (i == 0)
         {
-            for (var j = z4; j >= rects[i].rb; j -= interval)
+            for (var j = z4; j >= rects[i].rb; j -= __interval)
             {
                 points.push(properties.getPointAtLength(j));
             }
@@ -216,7 +209,7 @@ var drawSvgPath = function(shape, rows)
         result.push(drawSameDistancePoints(points, "#0f0", 10));
 
         points = [];
-        for (var j = rects[i].rb; j >= rects[i].rt; j -= interval)
+        for (var j = rects[i].rb; j >= rects[i].rt; j -= __interval)
         {
             points.push(properties.getPointAtLength(j));
         }
@@ -225,7 +218,7 @@ var drawSvgPath = function(shape, rows)
         points = [];
         if (i == rows - 1)
         {
-            for (var j = rects[i].rt; j >= real_lt; j -= interval)
+            for (var j = rects[i].rt; j >= real_lt; j -= __interval)
             {
                 points.push(properties.getPointAtLength(j));
             }
@@ -235,7 +228,7 @@ var drawSvgPath = function(shape, rows)
             var p0 = properties.getPointAtLength(rects[i].rt);
             var p3 = properties.getPointAtLength(rects[i].lt);
             points = drawBezier(p0, rects[i].t1, rects[i].t2, p3);
-            for (var j = rects[i].lt; j >= real_lt; j -= interval)
+            for (var j = rects[i].lt; j >= real_lt; j -= __interval)
             {
                 points.push(properties.getPointAtLength(j));
             }

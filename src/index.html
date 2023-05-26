@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <!--
   ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -37,101 +36,36 @@
   <meta property="og:url" content="https://pavellaptev.github.io/warp-svg">
   <meta property="og:description" content="Warp and distort SVG online">
 <link href="dist/css/app.css" rel="stylesheet"></head>
-
 <body>
-  <div id="loader">
-    <div id="loader-spinner"></div>
+<!--  <div id="loader">-->
+<!--    <div id="loader-spinner"></div>-->
+<!--  </div>-->
+  <div class="actions">
+    <div class="content-block" id="info-block">
+      <div class="close-btn"></div>
+      <div>
+        <div class="d-flex flex-column justify-content-between py-3">
+          <label for="containTextInput">Insert a letter to convert svg:</label>
+          <input id="containTextInput" type="text" style="width:100%"/>
+        </div>
+        <button type="button" id="btn_warpText">Start Warping</button>
+        <button type="button" id="next_font">Next font</button>
+      </div>
+    </div>
   </div>
-  <div id="if-mobile" style="opacity: 0; display: none; pointer-events: none;">
-    <div class="icon"></div>
+  <div>
+    <div id="svgWrapper">
+      <div id="svg_container">
+
+      </div>
+      <svg id="svg_element" viewBox="0 0 1500 1500" width = "1500px" height = "1500px" style="visibility:hidden">
+
+      </svg>
+    </div>
   </div>
-  <div id="app" style="opacity: 0">
-    <div class="dropzone-preview">
-      <div class="info">
-        <div class="icon"></div>
-        <h2 class="caption">Drop SVG file here</h2>
-      </div>
-      <div class="overlay"></div>
-    </div>
-
-    <div class="switcher">
-      <input type="checkbox" id="switch-theme" name="theme-switcher" />
-      <label for="switch-theme">Theme</label>
-    </div>
-
-    <div class="actions">
-      <div class="content-block" id="info-block">
-        <div class="close-btn"></div>
-        <div>
-          <div class="d-flex flex-column justify-content-between py-3">
-            <label for="text">Insert a letter to convert svg:</label>
-            <input id="text" type="text" style="width:100%"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="content-block" id="settings-block">
-        <div class="close-btn"></div>
-        <h3>Settings:</h3>
-        <div class="range-selector">
-          <label for="mesh-complexity">Mesh complexity</label>
-          <input id="mesh-complexity" type="range" min="1" max="11" step="1" value="3" />
-        </div>
-        <div class="range-selector">
-          <label for="interpolation-complexity">Smoothness <span style="opacity: 0.5;">(Interpolation)</span>
-          </label>
-          <input id="interpolation-complexity" type="range" min="0" max="400" step="100" value="50" />
-        </div>
-        <div class="checkbox-block">
-          <input id="show-original-box-btn" type="checkbox" />
-          <label for="show-original-box-btn">Show original box</label>
-        </div>
-      </div>
-      <div class="action-buttons">
-        <button id="show-info" class="secondary-btn active">
-          i
-        </button>
-        <button id="show-settings" class="secondary-btn active">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="none">
-            <path
-              d="M9 3C7.13616 3 5.57006 4.27477 5.12602 6L2 6V8H5.12602C5.57006 9.72523 7.13616 11 9 11C10.8638 11 12.4299 9.72523 12.874 8H22V6L12.874 6C12.4299 4.27477 10.8638 3 9 3ZM7 7C7 8.10457 7.89543 9 9 9C10.1046 9 11 8.10457 11 7C11 5.89543 10.1046 5 9 5C7.89543 5 7 5.89543 7 7Z M11.126 18H2V16H11.126C11.5701 14.2748 13.1362 13 15 13C16.8638 13 18.4299 14.2748 18.874 16H22V18H18.874C18.4299 19.7252 16.8638 21 15 21C13.1362 21 11.5701 19.7252 11.126 18ZM15 19C13.8954 19 13 18.1046 13 17C13 15.8954 13.8954 15 15 15C16.1046 15 17 15.8954 17 17C17 18.1046 16.1046 19 15 19Z" />
-          </svg>
-        </button>
-        <button id="load-svg-btn" type="file" multiple="false" accept="image/svg" class="secondary-btn">
-          Load SVG
-        </button>
-        <input id="load-svg-input" type="file" value="upload" />
-        <button id="save-result-btn" class="primary-btn">
-          Save Result
-        </button>
-      </div>
-    </div>
-
-    <div id="scale-wrap">
-      <div id="svg-container" style="width: 500px; height: 500px;">
-        <svg id="svg-control">
-          <path id="control-path" />
-        </svg>
-        <svg id="svg-element"></svg>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-<!--  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-132685793-3"></script>-->
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'UA-132685793-3');
-  </script>
   <script src="/src/js/d3.v3.min.js"></script>
-  <script src="/src/js/path-properties.min.js"></script>
-  <script src="/src/js/generatePoints"></script>
+  <script src="/src/js/svg-path-properties.min.js"></script>
+  <script src="/src/js/mychunks/seperatePathGenerator.js"></script>
   <script src="/src/js/index.js" type="module"></script>
-
-<script type="text/javascript" src="dist/js/app.js"></script></body>
-
+</body>
 </html>

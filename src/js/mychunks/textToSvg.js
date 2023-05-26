@@ -1,15 +1,16 @@
 import TextToSVG from 'text-to-svg';
 
-const textToSvg = (text, font = "../../font/Oswald-Bold.ttf", color="#000") => {
+const textToSvg = (text, font = "../../fonts/AbrilFatface-Regular.ttf", color="#ff0000") => {
   const attributes = {
-    fill: "#000"
+    fill: color
   };
   const options = {
     x: 0,
     y: 72,
     fontSize: 400,
     anchor: 'left baseline',
-    kerning: false,
+    letterSpacing: 0,
+    kerning: true,
     attributes: attributes
   };
 
